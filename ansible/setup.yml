@@ -40,7 +40,7 @@
     when: ld_so_conf.changed
 
   - name: Copy modified MTR example
-    copy: src=files/mtr.c
+    copy: src=files/DSI/UPD/SRC/MTR/mtr.c
           dest=/opt/DSI/UPD/SRC/MTR/mtr.c
     register: mtr
 
