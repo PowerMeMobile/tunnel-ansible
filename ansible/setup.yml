@@ -5,6 +5,9 @@
   vars:
   - dsi_version: 6.7.1
   tasks:
+  - name: Set hostname
+    hostname: name={{hostname}}
+
   - name: Install DSI stack deps
     yum: name={{item}}
          state=present
