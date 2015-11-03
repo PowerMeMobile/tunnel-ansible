@@ -22,3 +22,120 @@ Part of the Dialogic(R) DSI Development Package for Linux
 Copyright (C) 1994-2013 Dialogic Inc. All Rights Reserved.
 Syntax: gctload [-c -d -v -t1[r] -t2 -t3 -t4 -x]
 ...
+
+Start MTU & MTR example
+https://www.dialogic.com/~/media/manuals/ss7/cd/GenericInfo/GeneralDocumentation/U30SSS03-MTU-MTR-UG.pdf
+
+vagrant ssh server
+sudo -i
+cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
+../../../../gctload -d
+Reading from system configuration file: 'system.txt'
+...
+(14320)gctload: Verification started.
+(14320)gctload: Verification complete.
+...
+S7_MGT Boot complete
+S7L:14:49:20.464 I0000 SCTP Assoc Status: assoc_id=0 i_streams=32 o_streams=32 CONNECTED
+S7L:14:49:20.464 I0000 SCTP Path Status: assoc_id=0 (192.168.200.102) ACTIVE
+...
+
+vagrant ssh client
+sudo -i
+cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
+../../../../gctload -d
+Reading from system configuration file: 'system.txt'
+...
+(13729)gctload: Verification started.
+(13729)gctload: Verification complete.
+...
+S7_MGT Boot complete
+S7L:14:49:20.259 I0000 SCTP Assoc Status: assoc_id=0 i_streams=32 o_streams=32 CONNECTED
+S7L:14:49:20.259 I0000 SCTP Path Status: assoc_id=0 (192.168.200.101) ACTIVE
+...
+
+We have connection established!
+
+vagrant ssh client
+sudo -i
+cd /opt/DSI
+
+./mtu -d5 -a43020006 -g43010008 -e375291112233 -c375290000002
+MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
+===============================================================
+
+MTU mod ID 0x2d; MAP module Id 0x15
+mode 5 - Send routing info for Short Message (v3)
+
+MTU Tx: sending Open Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p010b0906070400000100140301044302000603044301000800
+MTU Tx: sending Send Routing Info for SMS Request
+MTU Tx: I0000 M tc7e0 i0000 f2d d15 s00 p010e01010f07a17325191122331001011107a17325090000202d020f0000
+MTU Tx: sending Delimiter Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p0500
+MTU Rx: received Open Confirmation
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p820501000b0906070400000100140301044301000803044302000600
+MTU Rx: received Send Routing Info for SMS Confirmation
+MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p820e0101120301020313079144214365870900
+MTU Rx: received Close Indication
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
+
+./mtu -d5 -a10001204732509000062 -g10001204732509000081 -e375291112233 -c375290000002
+MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
+===============================================================
+
+MTU mod ID 0x2d; MAP module Id 0x15
+mode 5 - Send routing info for Short Message (v3)
+
+MTU Tx: sending Open Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p010b09060704000001001403010a10001204732509000062030a1000120473250900008100
+MTU Tx: sending Send Routing Info for SMS Request
+MTU Tx: I0000 M tc7e0 i0000 f2d d15 s00 p010e01010f07a17325191122331001011107a17325090000202d020f0000
+MTU Tx: sending Delimiter Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p0500
+MTU Rx: received Open Confirmation
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p820501000b0906070400000100140301044301000803044302000600
+MTU Rx: received Send Routing Info for SMS Confirmation
+MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p820e0101120301020313079144214365870900
+MTU Rx: received Close Indication
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
+
+./mtu -d0 -a43020008 -g43010008 -i987654321 -s"Hello"
+MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
+===============================================================
+
+MTU mod ID 0x2d; MAP module Id 0x15
+mode 0 - Forward Short Message
+
+MTU Tx: sending Open Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p010b0906070400000100190201044302000803044301000800
+MTU Tx: sending Forward Short Message Request
+MTU Tx: I0000 M tc7e0 i0000 f2d d15 s00 p030e01011707000589674523f118080406a121436587f919172409c121436587f904005111304135350005c8329bfd062d023c0000
+MTU Tx: sending Delimiter Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p0500
+MTU Rx: received Open Confirmation
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p820501000b0906070400000100190201044301000803044302000800
+MTU Rx: received Forward Short Message Confirmation
+MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p840e010100
+MTU Rx: received Close Indication
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
+
+./mtu -d0 -a10001204732509000082 -g10001204732509000081 -i987654321 -s"Hello"
+MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
+===============================================================
+
+MTU mod ID 0x2d; MAP module Id 0x15
+mode 0 - Forward Short Message
+
+MTU Tx: sending Open Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p010b09060704000001001902010a10001204732509000082030a1000120473250900008100
+MTU Tx: sending Forward Short Message Request
+MTU Tx: I0000 M tc7e0 i0000 f2d d15 s00 p030e01011707000589674523f118080406a121436587f919172409c121436587f904005111304145800005c8329bfd062d023c0000
+MTU Tx: sending Delimiter Request
+MTU Tx: I0000 M tc7e2 i0000 f2d d15 s00 p0500
+MTU Rx: received Open Confirmation
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p820501000b0906070400000100190201044301000803044302000800
+MTU Rx: received Forward Short Message Confirmation
+MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p840e010100
+MTU Rx: received Close Indication
+MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400

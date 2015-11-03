@@ -68,3 +68,11 @@
   - name: Configure SCTP kernel module (4/4)
     command: sysctl -w kernel.msgmnb=65536
     when: msgmnb.changed
+
+  - name: Copy MTR GTT example config
+    copy: src=files/DSI/UPD/RUN/MTR_GTT_1
+          dest=/opt/DSI/UPD/RUN/
+
+  - name: Copy MTU GTT example config
+    copy: src=files/DSI/UPD/RUN/MTU_GTT_1
+          dest=/opt/DSI/UPD/RUN/
