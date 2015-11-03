@@ -1,0 +1,24 @@
+vagrant up
+
+cd ansible
+ansible all -i hosts -m ping
+server | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+client | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+ansible-playbook setup.yml -i hosts
+
+vagrant ssh server
+
+/opt/DSI/gctload -v
+DSI gctload Release 6.6.1 (Build 1178)
+Part of the Dialogic(R) DSI Development Package for Linux
+Copyright (C) 1994-2013 Dialogic Inc. All Rights Reserved.
+Syntax: gctload [-c -d -v -t1[r] -t2 -t3 -t4 -x]
+...

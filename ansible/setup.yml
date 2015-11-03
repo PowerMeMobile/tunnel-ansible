@@ -1,0 +1,47 @@
+---
+- name: Provision Tunnel env
+  hosts: all
+  sudo: true
+  vars:
+  - dsi_version: 6.7.1
+  tasks:
+  - name: Install DSI stack deps
+    yum: name={{item}}
+         state=present
+    with_items:
+    - gcc
+    - gcc-c++
+    - glibc-devel
+    - glibc.i686 # gctload fails to start w/o it
+    - java-1.7.0-openjdk-devel
+
+  - name: Create DSI folder
+    file: path=/opt/DSI
+          state=directory
+
+  - name: Copy DSI stack
+    copy: src=files/dpklnx.Z-{{dsi_version}}
+          dest=/tmp/
+
+  - name: Unarchive DSI stack
+    unarchive: src=/tmp/dpklnx.Z-{{dsi_version}}
+               dest=/opt/DSI/
+               creates=/opt/DSI/DSIDPK_{{dsi_version}}.txt
+
+  - name: Configure DSI stack (1/2)
+    copy: src=files/dsi.conf
+          dest=/etc/ld.so.conf.d/
+    register: ld_so_conf
+
+  - name: Configure DSI stack (2/2)
+    command: ldconfig -v
+    when: ld_so_conf.changed
+
+  - name: Copy modified MTR example
+    copy: src=files/mtr.c
+          dest=/opt/DSI/UPD/SRC/MTR/mtr.c
+    register: mtr
+
+  - name: Build DSI drivers and examples
+    command: ./makeall.sh 64bit chdir=/opt/DSI/UPD/SRC/
+    when: mtr.changed
