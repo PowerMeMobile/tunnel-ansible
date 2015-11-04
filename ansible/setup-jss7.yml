@@ -1,0 +1,44 @@
+---
+- name: Provision jSS7 simulator
+  hosts: all
+  sudo: true
+  vars:
+  - dsi_version: 6.7.1
+  tasks:
+  - name: Install jSS7 deps
+    yum: name={{item}}
+         state=present
+    with_items:
+    - java-1.7.0-openjdk-devel
+    - lksctp-tools
+    - lksctp-tools.i686
+
+  - name: Download JBoss
+    get_url: url=http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.tar.gz
+             dest=/tmp/jboss.tar.gz
+
+  - name: Unarchive JBoss
+    unarchive: src=/tmp/jboss.tar.gz
+               dest=/opt/
+               copy=false
+               creates=/opt/jboss-as-7.1.1.Final/README.txt
+
+  - name: Create JBoss link
+    file: src=/opt/jboss-as-7.1.1.Final
+          dest=/opt/jboss
+          state=link
+
+  - name: Download jSS7
+    get_url: url=https://github.com/Mobicents/jss7/archive/release-2.0.0.FINAL.tar.gz
+             dest=/tmp/jss7.tar.gz
+
+  - name: Unarchive jSS7
+    unarchive: src=/tmp/jss7.tar.gz
+               dest=/opt/
+               copy=false
+               creates=/opt/jss7-release-2.0.0.FINAL/pom.xml
+
+  - name: Create jSS7 link
+    file: src=/opt/jss7-release-2.0.0.FINAL
+          dest=/opt/jss7
+          state=link

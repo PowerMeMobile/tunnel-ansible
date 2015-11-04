@@ -1,7 +1,9 @@
-vagrant up
+Create server and client machines
+=================================
+$ vagrant up
 
-cd ansible
-ansible all -i hosts -m ping
+$ cd ansible
+$ ansible all -i hosts -m ping
 server | success >> {
     "changed": false,
     "ping": "pong"
@@ -12,22 +14,26 @@ client | success >> {
     "ping": "pong"
 }
 
-ansible-playbook setup-dsi.yml -i hosts
-
-vagrant ssh server
-
-/opt/DSI/gctload -v
+Setup the DSI stack
+===================
+$ ansible-playbook setup-dsi.yml -i hosts
+$ vagrant ssh server
+[INSIDE]
+$ /opt/DSI/gctload -v
 DSI gctload Release 6.7.1 (Build 1236)
 Part of the Dialogic(R) DSI Development Package for Linux
 Copyright (C) 1994-2015 Dialogic Corporation. All rights reserved.
 Syntax: gctload [-c -d -v -t1[r] -t2 -t3 -t4 -x]
 ...
+$ exit
 
 Start MTU & MTR example
+=======================
 https://www.dialogic.com/~/media/manuals/ss7/cd/GenericInfo/GeneralDocumentation/U30SSS03-MTU-MTR-UG.pdf
 
 # Tab 1
 vagrant ssh server
+[INSIDE]
 sudo -i
 cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
 ../../../../gctload -d
@@ -40,6 +46,7 @@ S7_MGT Boot complete
 
 # Tab 2
 vagrant ssh client
+[INSIDE]
 sudo -i
 cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
 ../../../../gctload -d
@@ -66,6 +73,7 @@ We have connection established!
 
 # Tab 3
 vagrant ssh client
+[INSIDE]
 sudo -i
 cd /opt/DSI
 
@@ -148,3 +156,7 @@ MTU Rx: received Forward Short Message Confirmation
 MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p840e010100
 MTU Rx: received Close Indication
 MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
+
+Setup the jSS7 simulator
+========================
+$ ansible-playbook setup-jss7.yml -i hosts
