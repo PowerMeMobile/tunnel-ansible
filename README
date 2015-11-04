@@ -168,22 +168,25 @@ $ vagrant ssh server
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
 $ sudo bin/run.sh core --name=dsi-test-server --rmi=9999 --http=8888
 
-Go to http://192.168.200.101:8888/
-
-SS7_Simulator_dsi-test-client -> type=TesterHost -> Press `start' button
-http://10.10.0.155:8888/InvokeAction//SS7_Simulator_dsi-test-client%3Atype%3DTesterHost/action=start?action=start
-http://10.10.0.155:8888/InvokeAction//SS7_Simulator_dsi-test-client%3Atype%3DTesterHost/action=stop?action=stop
-
 # Tab 2
 $ vagrant ssh client
 [INSIDE]
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
 $ sudo bin/run.sh gui --name=dsi-test-server
 
+Control via RMI
+---------------
 Select `Connect to the existing testerHost...'
 service:jmx:rmi:///jndi/rmi://server:9999/server
 Press `Run tests'
 Press `Start'
+
+OR
+
+Control via HTTP
+----------------
+Go to http://192.168.200.101:8888/
+SS7_Simulator_dsi-test-server -> type=TesterHost -> Press `start' button
 
 # Tab 3
 $ vagrant ssh client
@@ -191,6 +194,8 @@ $ vagrant ssh client
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
 $ sudo bin/run.sh gui --name=dsi-test-client
 
+Control via RMI
+---------------
 Select `Create a local testerHost'
 Press `Run tests'
 Press `Start'
