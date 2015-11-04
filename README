@@ -31,7 +31,8 @@ Start MTU & MTR example
 =======================
 https://www.dialogic.com/~/media/manuals/ss7/cd/GenericInfo/GeneralDocumentation/U30SSS03-MTU-MTR-UG.pdf
 
-# Tab 1
+Tab 1
+-----
 $ vagrant ssh server
 [INSIDE]
 $ cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
@@ -43,7 +44,8 @@ Reading from system configuration file: 'system.txt'
 ...
 S7_MGT Boot complete
 
-# Tab 2
+Tab 2
+-----
 $ vagrant ssh client
 $ [INSIDE]
 $ cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
@@ -69,7 +71,8 @@ S7L:14:49:20.259 I0000 SCTP Path Status: assoc_id=0 (192.168.200.101) ACTIVE
 
 We have connection established!
 
-# Tab 3
+Tab 3
+-----
 $ vagrant ssh client
 [INSIDE]
 $ cd /opt/DSI
@@ -162,13 +165,15 @@ ansible/files/mobicents-ss7-2.0.0.FINAL.zip
 
 $ ansible-playbook setup-jss7.yml -i hosts
 
-# Tab 1
+Tab 1
+-----
 $ vagrant ssh server
 [INSIDE]
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
 $ sudo bin/run.sh core --name=dsi-test-server --rmi=9999 --http=8888
 
-# Tab 2
+Tab 2
+------
 $ vagrant ssh client
 [INSIDE]
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
@@ -188,7 +193,8 @@ Control via HTTP
 Go to http://192.168.200.101:8888/
 SS7_Simulator_dsi-test-server -> type=TesterHost -> Press `start' button
 
-# Tab 3
+Tab 3
+-----
 $ vagrant ssh client
 [INSIDE]
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
