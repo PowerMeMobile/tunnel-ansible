@@ -14,9 +14,14 @@ client | success >> {
     "ping": "pong"
 }
 
+Setup the common environment
+============================
+$ ansible-playbook setup-common.yml -i hosts
+
 Setup the DSI stack
 ===================
 $ ansible-playbook setup-dsi.yml -i hosts
+
 $ vagrant ssh server
 [INSIDE]
 $ /opt/DSI/gctload -v
