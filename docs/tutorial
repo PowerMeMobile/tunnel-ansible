@@ -1,0 +1,274 @@
+The Short Message Service
+http://www.geekzone.co.nz/forums.asp?forumid=85&topicid=58680
+
+Part 1 - In which I introduce SS7
+=================================
+
+Way back in the olden days, telephone switches were run by (usually) women with big boards where plugs on retractable reels of wire would be plugged in to connect the calls. There once was a man named Strowager, who was an undertaker. It so happened that the wife of his main competitor [apparenlty there is competition for dead people; who knew?] worked at the local exchange for his town.
+
+Strowager became convinced that said wife was connecting calls for Strowager to her husband instead, so he went off, as you do, and invented the automatic telephone exchange. There's a beautifully reconstructed one at Motat, for those Aucklanders who haven't seen it, in which you can call between phones in the room and watch it run.
+
+Fast forward a bit to the two Steves, who made their money originally by selling "blue boxes". Blue boxes transmitted a series of tones into the line which would make the local switch think the next call was a maintenance test call, and give it away for free. We in the industry of course think that giving away free calls is a Bad Thing, so something had to be done.
+
+The result was the introduction of SS7 - Signaling System no. 7. Yes, I'm pretty sure there was an SS6. No, I don't know about SS1-5, I don't think they existed. Maybe it was like dBase II, which was actually the first one, but I digress.
+
+SS7 loosely follows the OSI layered architecture. It took the signaling out of band - amongst other things this means blue boxes don't work any more.
+
+MTP1
+====
+MTP stands for Message Transfer Part [not Protocol]. In the OSI architecture, MTP1 is the physical layer. This layer defines the physical aspects of the E1, which is the basic digital trunk used in most parts of the world. Not much more needs to be discussed about MTP1, it's a wire.
+
+MTP2
+====
+MTP2 is the link layer protocol. It introduces a very important identifier: the Point Code. In the ITU flavour of MTP, the point code is 14 bits long. The astute reader will note that this means there can only be a relatively small number of PCs in the whole world. So in addition to that there is also another indicator field which classifies the PC as international, national active or national standby.
+
+International PCs have a different format to national ones. New Zealand has only a handful (something like 10, although I don't remember exactly how many) of international PCs allocated to it's gateways. Generally 2 per international gateway.
+
+In the national network the use of the standby PC is useful when the signaling point in question does not need to be visible outside the network. A BSC, for example, would probably have a national standby PC.
+
+In any case that means that within each country, a further bunch of codes are available. Enough to go around, anyway.
+
+MTP2 provides instant detection of link faults. While idling, special packets are sent to continously fill the line. Should either end stop receiving them, they will know within milliseconds that there is a problem. Spanning tree on Ethernet typically needs about 30s to switch over, so in some respects MTP was well ahead of it's time.
+
+MTP3
+====
+MTP3 is the network layer protocol. When PC A wishes to signal to PC B, MTP3 takes care of routing between A and B. A and B could be directly connected, or they may be connected via one or more STPs - Signaling Transfer Points - which are, essentially, SS7 routers.
+
+What if A and B are in different countries? A and B can only route to each other if they have international PCs, right? Because otherwise they could have the same national PC. It turns out that that isn't a problem for a voice call.
+
+Nevertheless, MTP3 includes message types that possibly can go between switches that are not physically connected, so it does perform routing functions. Routing tables are generally quite static - telephone switches don't tend to come and go - with failover being the main automatic routing function.
+
+The E1 is divided into 32 64kbps channels. One is reserved for timing synch, leaving 31 available for traffic including signaling. Traditionally timeslot 16 is used for SS7 if there are voice channels on the trunk, but MTP could use all of it. High capacity signaling nodes such as the HLR or IN may do so.
+
+Each timeslot used is designated a Signaling Link, identified by a Signaling Link Code. A collection of Signaling Links is a Linkset, and Linksets may be combined into MTP routes. In this way many slow channels are combined into a quicker logical one, with great allowances for redundancy - since without signaling, there are no phone calls.
+
+MTP is in the process of being largely replaced by SIGTRAN - SIGnaling TRANsport - which provides IP versions of MTP2 and MTP3, depending on the situation. Since SIGTRAN runs on IP networks - typically gigabit ethernet - we are no longer constrained to have lots of 2Mb cables between boxes to get reasonable signaling capacity. A pair of CAT6 cables (for redundancy) does the job for even the biggest beasts. The higher layers of the stack see the lower SIGTRAN layers as if they were traditional MTP, and are unchanged.
+
+Most of our systems at 2degrees are connected via SIGTRAN. Only a few use MTP for various not very important reasons.
+
+TUP/ISUP
+========
+TUP - Telephony User Part, ISUP - ISDN User Part
+A short digression to explain why I don't need everyone to have an international PC to make an international voice call.
+
+TUP is no longer widely used, having been supplanted by ISUP, so I won't talk about it here, although it basically works the same way.
+
+When an ISUP switch ("local office") in Auckland wants to place a voice call to a number in Australia, it analyses the number in it's routing tables and comes up with the point code of another switch that can connect it. The second switch likely has no endpoints - no phones - and in that case is known as a transit switch. The transit switch will do the same, and so on, until the call reaches an international switch.
+
+The international switch passes the call to the next international switch, where it may go through several hops (although to Australia it typically wouldn't of course) and then into Australian transit switches, and finally to the destination local office which will make someone's phone ring.
+
+The ISUP call starts with a message called IAM - Initial Address Message. It contains all the information about the calling party (CgPty) and some but not necessarily all of the information about the called party. This is to allow for people with slow fingers on POTS phones. For now we'll ignore SAMs. One particularly important part of the ISUP messaging is the CIC, the Circuit Identification Code, which the switches use to pick a trunk for the voice channel.
+
+The IAM is passed along to the next switch and so on until it arrives at the destination. The destination checks the number is correct and passes back an Address Complete Message. At this point, the phone begins to ring. ACM is passed back along the chain to the originating switch.
+
+When the CdPty goes off hook, the destination sends back Answer Message (ANM). As each switch in the train receives the ANM, they connect through their respective trunks and the voice circuit forms. Also, they begin timing the call for the purposes of billing.
+
+Good times are had by all until someone hangs up. Whichever end that is initiates a Release (REL) message which is passed along the chain until the other end gets it, deallocates the trunk, stops the billing timer, and then sends back Release Complete (RLC). This goes back the other way and all the other trunks are torn down.
+
+In this manner, it is not necessary for the Auckland local office to know any international PCs, and likewise for the Australian local office. They only need to know the PC of the next transit switch, and the entire signaling conversation is between adjacent switches.
+
+The local NZ version of ISUP is known as PTC331 and all NZ carriers are required to abide by it. It's a subset of ITU ISUP dropping lots of stuff that isn't often used.
+
+SCCP and TCAP
+=============
+So, it's fine for basic voice that not everyone have an international PC. But what if I want to send an SMS? ISUP is for voice calls, and MTP3 can't tell me anything about the relationship between a phone number and a Point Code.
+
+As new desired applications appeared - the first big driver being tollfree (0800/0508) calling - MTP's limitations becamse clear. Thus two new protocols were introduced - Signaling Connection Control Part and Transaction Capabilities Application Part.
+
+You can think of SCCP as a new network layer protocol that uses all of MTP as the link layer. It has two important parameters, the Global Title, and the SubSystem Number.
+
+SCCP allows direct communication between two signaling points no matter where they are in the world. It's the backbone of high level telephony - mobile would not exist without it, and certainly not international roaming.
+
+The GT looks just like a phone number. In fact, the Service Centre Number configured into your handset for SMS is a GT. It's the GT of our SMSC. GTs may be physical - one GT = one machine - or they may be virtual - one GT = many machines. The translation between GT and PC is peformed by the STP. Being effectively a phone number, it is globally unique - hence the name - and routable around the world.
+
+The SSN is an identifier for the application - like the TCP port number. Multiple applications could run on the same device (also like TCP/IP), and in that case they would have different SSNs. SSN 6 is an HLR, 8 is an MSC, 146 is CAMEL.
+
+TCAP allows for an end to end transaction to occur. SCCP transports TCAP from point to point; TCAP allows an application to perform a dialogue. The dialogue could be a simple request and response, or it may be an ongoing conversation - for example CAMEL uses a dialogue that lasts for the duration of a call. Unique dialogues are identified by TCAP dialog IDs at each end.
+
+I'll end this post here by saying, ready for next time, that SCCP allows one machine to address another anywhere in the world, and TCAP allows them to converse reliably.
+
+
+Part 2 - The GSM Network
+========================
+I'm not going to go into detail about the whole network in this post; we're discussing the Short Message Service, so I will only be covering the parts that are directly relevant, which is complex enough as it is.
+
+Radio Access
+============
+Radio access is a big fluffy cloud. It's a slightly different colour in 3G than it is in 2G, but it's still a big fluffy cloud. It doesn't really matter here except in as much as errors can occur in submitting or delivering messages on the air interface, and we have different error codes for the different scenarios, which we may treat differently.
+
+MAP
+===
+MAP is the Mobile Application Part. MAP uses the services of SCCP and TCAP to support global signaling between elements in the mobile network, and between mobile networks to support roaming, SMS delivery and other things.
+
+An important new identifier introduced by MAP is the IMSI (International Mobile Station Identifier). The IMSI is always allocated out of the home provider's number range. This range is not the same as the phone number range. In fact the range is known as the Mobile Country Code. NZ's MCC is 530, and 2degrees' number range (the Mobile Network Code) is 24. Hence all our IMSIs start with 53024. Porting has no bearing on IMSI - a number ported from Vodafone to 2degrees still has a 53024 IMSI. This is important later.
+
+
+Submitting a Message
+====================
+We'll assume your handset is attached to the network and ignore the charging aspects here.
+
+To submit a message, the handset communicates with the serving MSC (Mobile Switching Centre) in 2G or MSS (MSC Server, the brains of an MSC - the physical trunks are split out to the MGW, Media GateWay) to submit the message into the core. Contained in the signaling are the SMSC (Short Message Service Centre) GT as discussed in the previous post, and the user data including the destination MSISDN (phone number).
+
+From this message the MSC constructs a MAP message known as MO_FSM (Mobile Originated Forward Short Message). The MO_FSM contains the following information:
+
+SCCP - CgPty = MSC GT; CdPty = SMSC GT, SSN = 8 (MSC)
+TCAP - Dialogue IDs
+MAP - TP-Data = CgPty IMSI, CdPty TON (Type of Number), NPI (Number Plan Indicator), MSISDN, various flags, message text
+
+The MSC uses it's SCCP routing tables to determine a PC to forward this message to. Often but not always that PC will be an STP, which will perform further routing (and possibly translation, especially if the SMSC GT is a virtual one to enable load balancing) and forward the message on.
+
+At some point it will arrive at the SMSC. If it doesn't, then that's one reason you might see a "Sending Failed" error on your handset. Lots of reasons why that might be the case, and I don't need to discuss them all here.
+
+The SMSC will receive the message and perform it's internal checks. These things may include but are not limited to:
+    Is the sender one of my IMSIs?
+    Is the sender really where they say they are (antispam)?
+    Does the destination look valid (i.e. is there at least a chance I can deliver it)?
+
+Assuming everything looks good, the SMSC will respond to the MSC with an ACK, and the TCAP dialogue closes. The MSC then ACKs to the handset, and you get "Message Sent".
+
+Delivering a Message - SS7
+==========================
+The SMSC contains message routing tables. Let's assume the destination is valid - we will deliver it successfully in this example - and that the routing tables say SS7 delivery is required. In NZ, we do not use SS7 delivery for national interconect messages. This is mainly because Telecom's CDMA network had only limited support for MAP until recently, and it was easier to use a different protocol, SMPP, which is pretty technology-agnostic. SS7 delivery is used to deliver within the network though (i.e. 2degrees to 2degrees, Vodafone to Vodafone, Telecom to Telecom).
+
+Step 1 - Where are you?
+=======================
+The essence of a mobile network is that you are, in fact mobile, and therefore not always in the same place. The go-to element for location information is the HLR, the Home Location Register.
+
+The HLR maintains all the static information about your subscription, keyed on IMSI. (Not MSISDN, like I said, the mobile network really only cares about IMSIs). In addition to the static info, it also includes a piece of dynamic info, the VLR address (Visitor Location Register).
+
+Your subscriber data is always stored in the HLR. A copy is stored in the VLR attached to the MSC you're currently attached to. This means that your static info is always here at Khyber Pass in our HLR, but the realtime copy might be in Vodafone, or Telstra Australia, or AT&T USA, or in whoever's network you currently happen to be standing.
+
+The SMSC needs to know the VLR address. But the problem is, it doesn't even know your HLR address. So we do some trickery.
+
+The SMSC constructs a new MAP message called SRI_SM (Send Routing Info for Short Message). The SRI_SM contains the following info:
+
+SCCP - CgPty = SMSC GT, CdPty = MSISDN, <-- trickery CdPty SSN = 6 (HLR)
+MAP - TP Data CdPty MSISDN
+
+At some point along the way an STP, or another node performing an STP function (perhaps an MSC) sees the magic combination CdPty = MSISDN, SSN = 6. The STP has a translation table that turns MSISDN prefixes (e.g. 6422) into HLR addresses. It substitutes the HLR address as the CdPty address and forwards the message on.
+
+Eventually it will arrive at the HLR - which may be in the same network, or elsewhere in the world. The HLR will send back a response with the following information:
+
+SCCP - CgPty = HLR SSN = 6, CdPty = SMSC GT, SSN = 8
+MAP - CdPty IMSI, CdPty VLR address
+
+Note, you can also deliver messages in the packet network via the SGSN instead of the MSC/VLR, but it's virtually identical as far as the SMSC is concerned.
+
+Now the SMSC knows where you are and can proceed to deliver the message.
+
+Step 2 - Message Delivery
+=========================
+The SMSC constructs a new MAP message, MT_FSM, which contains the following information:
+
+SCCP - CgPty = SMSC GT, CdPty = VLR GT, SSN 8 (MSC)
+MAP - TP Data - Originating TON, NPI, MSISDN; Destination TON, NPI, MSISDN; flags; message text
+
+The SMSC will deliver this message into the SCCP network whereupon it will eventually arrive at the correct MSC/VLR. The MSC will start some radio paging procedures to establish contact with the handset (fluffy cloud) and deliver the message. The handset will ACK the message to the MSC, and the MSC will ACK the message to the SMSC.
+
+Should the SMSC fail to receive an ACK in a timely manner, or receive a NACK for some reason, the message will be returned to the queue to be retried later. In the specific case that the MSC reports that the handset has powered off, the SMSC sends another MAP message, Set Message Waiting Data, to the HLR, to request that the HLR inform it when the handset reattaches.
+
+This is why you begin to receive queued messages within a minute or so after powering on your handset.
+
+Why it Might Not Work - reason 1
+The telephone network is not the Internet. Keep that in mind. It's both our curse and our blessing. On the internet, everyone is connected to everyone else unless they specifically opt-out. In the telephony world it's the other way round.
+
+So it's a curse: we have to specifically agree to an interconnect and then configure it in order for A's customers to call B's customers. And traditionally, we need to do that both ways for every B. But it's a blessing: having gone to the effort of getting the agreements in place, we make sure it works.
+
+That's why international Skype calls over the internet are free but generally rubbish, whereas international phone calls cost money, but are generally clear and low latency. Whether it's VoIP or not has nothing to do with it. Dedicated bandwidth is dedicated bandwidth no matter which way you arrange the bits.
+
+There are levels of connectivity: firstly, you need the SCCP routing - the STPs at each end need to know about the GT ranges of the other end. This is the first thing you need to have an agreement about. Then there's a roaming agreement. It's not required for SMS interworking, but you generally agree on both at the same time. Then there's the message routing itself. There are other ways to deliver the message, which I will discuss in the next post.
+
+Again, without going into the reasons why, there is no SCCP signaling agreement between 2degrees and certain international operators. This precludes direct SS7 delivery, and is the first of the reasons why you might not receive messages from your friends or famly overseas.
+
+Part 3 - There's More Than One Way To Do It
+===========================================
+as the Perl guys say.
+
+Lack of a direct SS7 relationship is not necessarily the end of the story.
+
+SMPP and the National Interconnects
+===================================
+I said earlier that we don't use SS7 delivery for national interconect, even though we're all 3GPP shops now. The national interconnects use a different protocol.
+
+My first job out of Uni was with a company called Aldiscon, makers of the fine Telepath SMSC and inventors of the SMPP (Short Message Peer to Peer) protocol. SMPP is a TCP/IP protocol. We don't need to go into the details but it's worth mentioning a few things about it.
+
+Firstly it's network agnostic. SMPP works whether the mobile network in question is GSM, IS41, PCS, or not a mobile network at all - most premium SMS messages are delivered via SMPP. It's the only external interface we support at the moment, in fact. Because it works equally well with GSM and CDMA, it was chosen as the interconnect protocol for Vodafone and Telecom, back in the day.
+
+Secondly, it's point to point. SS7 has a many to many relationship; many SMSCs can talk to many HLRs and MSCs and vice versa, within the same network. SMPP connects one and only one SMSC or gateway to one other. Load balancing and redundancy can be faked but are not inherent to SMPP's design, as they are with SS7.
+
+SMPP still requires an interconnect agreement, though - you obviously can't connect to a random operator's SMSC and expect it to deliver messages for you.
+
+National interconnect message delivery then, works differently to an on-net delivery does.
+
+The submission is the same, but when the SMSC's routing tables specify an SMPP interface as the delivery, the message is passed directly over the link to the next hop. In the 2degrees network there is a public-facing gateway between the SMSC and everyone else. Apart from anything else this adds an additional layer of security (sort of an application level firewall) between the crown jewels and the great unwashed. Vodafone are also architected this way. I don't know about Telecom.
+
+So, our SMSC passes the message directly to the SMPP gateway (no SRI lookups), and the gateway passes it directly to the receiving SMSC.
+
+This is the third differnce: in an SS7 delivery, the sender's SMSC terminates the message to the receiver's handset. In an SMPP delivery, the receiver's SMSC terminates the message (by SS7 delivery) to the receiver's handset.
+
+So far so simple.
+
+Hubs - Indirect Delivery
+========================
+This is where it starts to get... interesting.
+
+Around the late 90's/early 00's companies started springing up that would perform SMS interworking hub functions. Suppose 2degrees wants to send an SMS to a certain international operator with whom we have no SMS interworking agreement. We'll call them "X". Further suppose that both 2degrees and X have working agreements to receive messages from a hub company, who we shall call "S".
+
+Since 2degrees cannot terminate directly to X, we send the messages to S instead. S knows a route to X, and forwards the message on, where it is delivered. These interconnects might be SS7 or SMPP (or indeed perhaps one of the other less common IP based protocols). Either way X's customers can now receive messages from 2degrees.
+
+However, X may still need to do configuration in order to route messages from X to 2degrees back via S. Some operators configure an effective "default" route via a hub. If they don't know specifically what to do with a number that looks like it might be international, they let the hub try to figure it out. Most of the older operators don't do that, though. Certain UK operators have been around since the beginning of GSM, so let's assume they don't do default routing.
+
+If X does not configure a specific or default route for 6422 back towards S, then any messages sent by X's customers to 2degrees will not arrive. It should now become clear to the astute reader that there isn't a whole lot 2degrees can do about X's routing other than to ask nicely that it please be setup.
+
+Hubs make things a lot easier, in theory, but are not a panacea.
+
+Next post - MNP!
+
+Part 4 - Porting - we've heard of it
+====================================
+All of that is reasonably simple, as least as simple as these things get, and that's not very. But then some bright spark decided it would be a great idea if you didn't have to change telephone numbers when you changed telephone networks.
+
+IPMS
+====
+IPMS is the Industry Porting Management System. It's basically a database with a web services front end. Whenever a number is ported or relinquished, the donor and recipient carriers negotiate it via IPMS, and then, finally, all carriers pick up the completed port and insert it into their own local copies of the database.
+
+Voice Calling
+=============
+In NZ we use the All Call Query (ACQ) method for LMNP. Back in the first post I said that the first ISUP message for a voice call was IAM. One of the parameters in the IAM is unsurprisingly the called party's number. As the IAM passes through the local STP, it will detect that the application level message is IAM, and do a number port check on the called party. If the number is ported, a routing prefix called a Hand Over Code (HOC) is attached to the beginning of the number, and the call is routed to the receipient network for termination.
+
+It's also possible to forward to the donor network (without a HOC, naturally) who will send it on. But all parties to the Determination perform the ACQ and send directly to the right place. When an international voice call arrives, it goes to the donor network and is routed on.
+
+SMS via SS7
+===========
+Message routing in the SMSC is by number range - all numbers starting with 6421, for example, are routed to Vodafone. In the national network, a porting check overrides that and a number ported from Vodafone to anyone else is redirected to the recipient network.
+
+When an international network sends a message to a number ported to 2degrees, they have no visibility of the porting status of the number. Their SMSC will send the SRI_SM to the donor network.
+The donor's porting systems (probably also in their STPs) intercept the SRI_SM, prepend the HOC, and forward it to 2degrees. The 2degrees STP sees the HOC and strips it off again before forwarding to the HLR.
+
+Now, under the terms of the agreement, our HLR must respond directly. The SRI_SM response is not sent to to the donor network, it is sent back to the originating network.
+
+So here's a potential problem. Suppose Y interconnects with the Donor, but not 2degrees, or suppose they interconnect with 2degrees via a hub that is unaware of NZ MNP. We (2degrees) will not be able to respond to the SRI_SM forwarded to us by the donor. The message cannot be delivered.
+
+This means that even if Y agrees to interconnect with us, we still cannot guarantee all messages will arrive.
+
+SMS via SMPP
+============
+Suppose that Y interconnects with the donor via SMPP - under the terms of the agreement such messages are not required to be forwarded - these may or may not arrive depending on how narrowly the donor chooses to interpret the agreement, or whether their equipment is even capable of handling this case. Two of the three NZ mobile networks can do this, the other one can't.
+
+International Roaming
+=====================
+Oh, and there's one more wrinkle - if the SMS from X to 2degrees is terminated via SS7, and the 2degrees customer is roaming in a network with which X has no signaling interconnect, the message won't terminate there either, or vice versa for that matter; if X's subscriber is roaming somewhere 2degrees has no signaling with, messages won't go to X either.
+
+Commercial Considerations
+=========================
+One way or another it all comes down to who is billing who. One reason for an inability to agree on an interconnect is that no deal can be reached on the billing. No billing, no traffic, for some carriers.
+
+This isn't necessarily to suggest everyone is penny-pinching - it's also a valid deterrent to international spam, and we all hate that.
+
+Summary
+=======
+If this all seems long and complex, that's because it is. There is no magic bullet for SMS interconnect and there never will be. Hopefully you now have some inkling as to why things don't always work.
+
+2degrees is doing everything possible to get 2 way SMS working everywhere, all the time. But whether it's a conspiracy, a cock up, or just plain apathy, we are not able to force international operators to route messages to us. And then again, even if they do - things can break at their end and something that works fine for me all the time sitll might not work at all for you.
+
+All we can do is apologise and assure you that we are working on it.
