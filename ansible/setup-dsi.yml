@@ -24,12 +24,26 @@
     file: path=/opt/DSI
           state=directory
 
-  - name: Copy DSI stack
-    copy: src=files/dpklnx.Z-{{dsi_version}}
-          dest=/tmp/
+  - name: Download DSI stack
+    get_url: url=http://www.dialogic.com/files/DSI/developmentpackages/linux/dpklnx.Z
+             dest=/tmp/dpklnx.Z
+
+  - name: Determine DSI stack version
+    shell: tar -ztf /tmp/dpklnx.Z  | grep DSIDPK_ | sed -E 's/DSIDPK_(.*).txt/\1/'
+    register: stack_version
+    changed_when: false
+
+  - name: Print DSI stack version
+    debug: msg='Downloaded DSI stack version is {{stack_version.stdout}}'
+
+  - name: Ensure correct DSI stack version
+    assert:
+        that:
+        - stack_version.rc == 0
+        - stack_version.stdout == dsi_version
 
   - name: Unarchive DSI stack
-    unarchive: src=/tmp/dpklnx.Z-{{dsi_version}}
+    unarchive: src=/tmp/dpklnx.Z
                dest=/opt/DSI/
                copy=false
                creates=/opt/DSI/DSIDPK_{{dsi_version}}.txt
