@@ -22,6 +22,12 @@ Setup the DSI stack
 ===================
 $ ansible-playbook setup-dsi.yml -i hosts
 
+Setup the jSS7 simulator
+========================
+$ ansible-playbook setup-jss7.yml -i hosts
+
+Test the DSI stack
+==================
 $ vagrant ssh server
 [INSIDE]
 $ /opt/DSI/gctload -v
@@ -162,13 +168,11 @@ MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p840e010100
 MTU Rx: received Close Indication
 MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
 
-Setup the jSS7 simulator
+Test the jSS7 simulator
 ========================
 Chapter 12. SS7 Simulator
 ss7/docs/en-US/pdf/Mobicents_SS7Stack_User_Guide.pdf
 ansible/files/mobicents-ss7-2.0.0.FINAL.zip
-
-$ ansible-playbook setup-jss7.yml -i hosts
 
 Tab 1
 -----
