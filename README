@@ -17,9 +17,9 @@ ansible-playbook setup-dsi.yml -i hosts
 vagrant ssh server
 
 /opt/DSI/gctload -v
-DSI gctload Release 6.6.1 (Build 1178)
+DSI gctload Release 6.7.1 (Build 1236)
 Part of the Dialogic(R) DSI Development Package for Linux
-Copyright (C) 1994-2013 Dialogic Inc. All Rights Reserved.
+Copyright (C) 1994-2015 Dialogic Corporation. All rights reserved.
 Syntax: gctload [-c -d -v -t1[r] -t2 -t3 -t4 -x]
 ...
 
