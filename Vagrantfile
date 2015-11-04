@@ -20,5 +20,6 @@ Vagrant.configure(2) do |config|
     end
   end
 
+  config.ssh.forward_x11 = true
   config.vbguest.auto_update = false
 end

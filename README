@@ -32,11 +32,11 @@ Start MTU & MTR example
 https://www.dialogic.com/~/media/manuals/ss7/cd/GenericInfo/GeneralDocumentation/U30SSS03-MTU-MTR-UG.pdf
 
 # Tab 1
-vagrant ssh server
+$ vagrant ssh server
 [INSIDE]
-sudo -i
-cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
-../../../../gctload -d
+$ sudo -i
+$ cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
+$ ../../../../gctload -d
 Reading from system configuration file: 'system.txt'
 ...
 (14320)gctload: Verification started.
@@ -45,11 +45,11 @@ Reading from system configuration file: 'system.txt'
 S7_MGT Boot complete
 
 # Tab 2
-vagrant ssh client
-[INSIDE]
-sudo -i
-cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
-../../../../gctload -d
+$ vagrant ssh client
+$ [INSIDE]
+$ sudo -i
+$ cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
+$ ../../../../gctload -d
 Reading from system configuration file: 'system.txt'
 ...
 (13729)gctload: Verification started.
@@ -72,12 +72,12 @@ S7L:14:49:20.259 I0000 SCTP Path Status: assoc_id=0 (192.168.200.101) ACTIVE
 We have connection established!
 
 # Tab 3
-vagrant ssh client
+$ vagrant ssh client
 [INSIDE]
-sudo -i
-cd /opt/DSI
+$ sudo -i
+$ cd /opt/DSI
 
-./mtu -d5 -a43020006 -g43010008 -e375291112233 -c375290000002
+$ ./mtu -d5 -a43020006 -g43010008 -e375291112233 -c375290000002
 MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
 ===============================================================
 
@@ -97,7 +97,7 @@ MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p820e0101120301020313079144214365870900
 MTU Rx: received Close Indication
 MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
 
-./mtu -d5 -a10001204732509000062 -g10001204732509000081 -e375291112233 -c375290000002
+$ ./mtu -d5 -a10001204732509000062 -g10001204732509000081 -e375291112233 -c375290000002
 MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
 ===============================================================
 
@@ -117,7 +117,7 @@ MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p820e0101120301020313079144214365870900
 MTU Rx: received Close Indication
 MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
 
-./mtu -d0 -a43020008 -g43010008 -i987654321 -s"Hello"
+$ ./mtu -d0 -a43020008 -g43010008 -i987654321 -s"Hello"
 MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
 ===============================================================
 
@@ -137,7 +137,7 @@ MTU Rx: I0000 M t87e1 i0000 f15 d2d s00 p840e010100
 MTU Rx: received Close Indication
 MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
 
-./mtu -d0 -a10001204732509000082 -g10001204732509000081 -i987654321 -s"Hello"
+$ ./mtu -d0 -a10001204732509000082 -g10001204732509000081 -i987654321 -s"Hello"
 MTU MAP Test Utility  Copyright (C) Dialogic Corporation 1997-2011. All Rights Reserved.
 ===============================================================
 
@@ -160,3 +160,30 @@ MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
 Setup the jSS7 simulator
 ========================
 $ ansible-playbook setup-jss7.yml -i hosts
+
+# Tab 1
+$ vagrant ssh server
+[INSIDE]
+$ sudo -i
+$ cd /opt/jSS7/ss7/mobicents-ss7-simulator
+$ bin/run.sh core --name=dsi-test-server --rmi=9999 --http=8888
+
+Go to http://192.168.200.101:8888/
+
+SS7_Simulator_dsi-test-client -> type=TesterHost -> Press `start' button
+http://10.10.0.155:8888/InvokeAction//SS7_Simulator_dsi-test-client%3Atype%3DTesterHost/action=start?action=start
+http://10.10.0.155:8888/InvokeAction//SS7_Simulator_dsi-test-client%3Atype%3DTesterHost/action=stop?action=stop
+
+# Tab 2
+$ vagrant ssh client
+[INSIDE]
+$ sudo -i
+$ cd /opt/jSS7/ss7/mobicents-ss7-simulator
+$ bin/run.sh gui --name=dsi-test-client
+
+ssh -X -p 2200 vagrant@localhost 'cd /opt/jSS7/ss7/mobicents-ss7-simulator/; bin/run.sh gui --name=dsi-test-client'
+Select `Create a local testerHost'
+
+ssh -X -p 2200 vagrant@localhost 'cd /opt/jSS7/ss7/mobicents-ss7-simulator/; bin/run.sh gui --name=dsi-test-server'
+Select `Connect to the existing testerHost...'
+service:jmx:rmi:///jndi/rmi://server:9999/server
