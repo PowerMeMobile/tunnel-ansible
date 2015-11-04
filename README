@@ -12,7 +12,7 @@ client | success >> {
     "ping": "pong"
 }
 
-ansible-playbook setup.yml -i hosts
+ansible-playbook setup-dsi.yml -i hosts
 
 vagrant ssh server
 

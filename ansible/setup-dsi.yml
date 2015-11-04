@@ -1,5 +1,5 @@
 ---
-- name: Provision Tunnel env
+- name: Provision DSI stack
   hosts: all
   sudo: true
   vars:
@@ -31,6 +31,7 @@
   - name: Unarchive DSI stack
     unarchive: src=/tmp/dpklnx.Z-{{dsi_version}}
                dest=/opt/DSI/
+               copy=false
                creates=/opt/DSI/DSIDPK_{{dsi_version}}.txt
 
   - name: Configure DSI stack (1/2)
