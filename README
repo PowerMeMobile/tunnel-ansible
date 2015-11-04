@@ -26,6 +26,7 @@ Syntax: gctload [-c -d -v -t1[r] -t2 -t3 -t4 -x]
 Start MTU & MTR example
 https://www.dialogic.com/~/media/manuals/ss7/cd/GenericInfo/GeneralDocumentation/U30SSS03-MTU-MTR-UG.pdf
 
+# Tab 1
 vagrant ssh server
 sudo -i
 cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
@@ -36,10 +37,8 @@ Reading from system configuration file: 'system.txt'
 (14320)gctload: Verification complete.
 ...
 S7_MGT Boot complete
-S7L:14:49:20.464 I0000 SCTP Assoc Status: assoc_id=0 i_streams=32 o_streams=32 CONNECTED
-S7L:14:49:20.464 I0000 SCTP Path Status: assoc_id=0 (192.168.200.102) ACTIVE
-...
 
+# Tab 2
 vagrant ssh client
 sudo -i
 cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
@@ -50,12 +49,22 @@ Reading from system configuration file: 'system.txt'
 (13729)gctload: Verification complete.
 ...
 S7_MGT Boot complete
+
+The server console now should have:
+...
+S7L:14:49:20.464 I0000 SCTP Assoc Status: assoc_id=0 i_streams=32 o_streams=32 CONNECTED
+S7L:14:49:20.464 I0000 SCTP Path Status: assoc_id=0 (192.168.200.102) ACTIVE
+...
+
+The client console now should have:
+...
 S7L:14:49:20.259 I0000 SCTP Assoc Status: assoc_id=0 i_streams=32 o_streams=32 CONNECTED
 S7L:14:49:20.259 I0000 SCTP Path Status: assoc_id=0 (192.168.200.101) ACTIVE
 ...
 
 We have connection established!
 
+# Tab 3
 vagrant ssh client
 sudo -i
 cd /opt/DSI
