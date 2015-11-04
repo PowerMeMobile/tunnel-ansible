@@ -69,6 +69,7 @@
     copy: src=files/DSI/UPD/SRC/MTR/mtr.c
           dest=/opt/DSI/UPD/SRC/MTR/mtr.c
     register: mtr
+    when: ansible_hostname == 'server'
 
   - name: Build DSI drivers and examples
     command: ./makeall.sh 64bit chdir=/opt/DSI/UPD/SRC/
@@ -95,7 +96,9 @@
   - name: Copy MTR GTT example config
     copy: src=files/DSI/UPD/RUN/MTR_GTT_1
           dest=/opt/DSI/UPD/RUN/
+    when: ansible_hostname == 'server'
 
   - name: Copy MTU GTT example config
     copy: src=files/DSI/UPD/RUN/MTU_GTT_1
           dest=/opt/DSI/UPD/RUN/
+    when: ansible_hostname == 'client'
