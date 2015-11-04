@@ -22,6 +22,16 @@
     - '@fonts'
     when: ansible_hostname == 'client'
 
+  # Workaround to make X11 work under root
+  # http://www.linuxquestions.org/questions/linux-software-2/cannot-open-display-as-root-352200/
+  - name: Set server to /etc/hosts
+    lineinfile: dest=/etc/hosts
+                line='192.168.200.101 server'
+
+  - name: Export XAUTHORITY
+    lineinfile: dest=/home/vagrant/.bashrc
+                line='export XAUTHORITY=/home/vagrant/.Xauthority'
+
   - name: Create jSS7 folder
     file: path=/opt/jSS7
           state=directory

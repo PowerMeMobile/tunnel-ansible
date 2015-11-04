@@ -34,9 +34,8 @@ https://www.dialogic.com/~/media/manuals/ss7/cd/GenericInfo/GeneralDocumentation
 # Tab 1
 $ vagrant ssh server
 [INSIDE]
-$ sudo -i
 $ cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
-$ ../../../../gctload -d
+$ sudo ../../../../gctload -d
 Reading from system configuration file: 'system.txt'
 ...
 (14320)gctload: Verification started.
@@ -47,9 +46,8 @@ S7_MGT Boot complete
 # Tab 2
 $ vagrant ssh client
 $ [INSIDE]
-$ sudo -i
 $ cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
-$ ../../../../gctload -d
+$ sudo ../../../../gctload -d
 Reading from system configuration file: 'system.txt'
 ...
 (13729)gctload: Verification started.
@@ -74,7 +72,6 @@ We have connection established!
 # Tab 3
 $ vagrant ssh client
 [INSIDE]
-$ sudo -i
 $ cd /opt/DSI
 
 $ ./mtu -d5 -a43020006 -g43010008 -e375291112233 -c375290000002
@@ -164,9 +161,8 @@ $ ansible-playbook setup-jss7.yml -i hosts
 # Tab 1
 $ vagrant ssh server
 [INSIDE]
-$ sudo -i
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
-$ bin/run.sh core --name=dsi-test-server --rmi=9999 --http=8888
+$ sudo bin/run.sh core --name=dsi-test-server --rmi=9999 --http=8888
 
 Go to http://192.168.200.101:8888/
 
@@ -177,13 +173,22 @@ http://10.10.0.155:8888/InvokeAction//SS7_Simulator_dsi-test-client%3Atype%3DTes
 # Tab 2
 $ vagrant ssh client
 [INSIDE]
-$ sudo -i
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
-$ bin/run.sh gui --name=dsi-test-client
+$ sudo bin/run.sh gui --name=dsi-test-server
 
-ssh -X -p 2200 vagrant@localhost 'cd /opt/jSS7/ss7/mobicents-ss7-simulator/; bin/run.sh gui --name=dsi-test-client'
-Select `Create a local testerHost'
-
-ssh -X -p 2200 vagrant@localhost 'cd /opt/jSS7/ss7/mobicents-ss7-simulator/; bin/run.sh gui --name=dsi-test-server'
 Select `Connect to the existing testerHost...'
 service:jmx:rmi:///jndi/rmi://server:9999/server
+Press `Run tests'
+Press `Start'
+
+# Tab 3
+$ vagrant ssh client
+[INSIDE]
+$ cd /opt/jSS7/ss7/mobicents-ss7-simulator
+$ sudo bin/run.sh gui --name=dsi-test-client
+
+Select `Create a local testerHost'
+Press `Run tests'
+Press `Start'
+
+We have connection established!
