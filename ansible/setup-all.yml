@@ -1,0 +1,4 @@
+---
+- {include: setup-common.yml}
+- {include: setup-dsi.yml}
+- {include: setup-jss7.yml}
