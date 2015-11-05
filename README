@@ -179,14 +179,14 @@ Tab 1
 $ vagrant ssh server
 [INSIDE]
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
-$ sudo bin/run.sh core --name=dsi-test-server --rmi=9999 --http=8888
+$ sudo bin/run.sh core --name=server --rmi=9999 --http=8888
 
 Tab 2
 ------
 $ vagrant ssh client
 [INSIDE]
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
-$ sudo bin/run.sh gui --name=dsi-test-server
+$ sudo bin/run.sh gui --name=server
 
 Control via RMI
 ---------------
@@ -200,14 +200,14 @@ OR
 Control via HTTP
 ----------------
 Go to http://192.168.200.101:8888/
-SS7_Simulator_dsi-test-server -> type=TesterHost -> Press `start' button
+SS7_Simulator_server -> type=TesterHost -> Press `start' button
 
 Tab 3
 -----
 $ vagrant ssh client
 [INSIDE]
 $ cd /opt/jSS7/ss7/mobicents-ss7-simulator
-$ sudo bin/run.sh gui --name=dsi-test-client
+$ sudo bin/run.sh gui --name=client
 
 Control via RMI
 ---------------

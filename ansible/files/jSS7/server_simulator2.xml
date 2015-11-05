@@ -5,8 +5,8 @@
 	<instance_L3 value="TCAP+MAP"/>
 	<instance_TestTask value="SMS_TEST_CLIENT"/>
 	<m3ua storePcapTrace="false" isSctpServer="true" localPort="2905" remotePort="2905" ipChannelType="SCTP" dpc="1" opc="2" si="3" routingConext="101" networkAppearance="102" m3uaFunctionality="IPSP" m3uaExchangeType="SE" m3uaIPSPType="SERVER">
-		<localHost value="192.168.200.102"/>
-		<remoteHost value="192.168.200.101"/>
+		<localHost value="192.168.200.101"/>
+		<remoteHost value="192.168.200.102"/>
 	</m3ua>
 	<dialogic SourceModuleId="0" DestinationModuleId="0"/>
 	<sccp routeOnGtMode="true" remoteSpc="1" localSpc="2" ni="2" remoteSsn="8" localSsn="8" translationType="0">
