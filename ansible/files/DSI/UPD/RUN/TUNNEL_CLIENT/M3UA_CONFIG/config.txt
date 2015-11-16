@@ -32,17 +32,27 @@ SCCP_SSR 2 LSS 0x08 0x2d 0 MAP
 *
 * Define Remote Sub-Systems:
 * SCCP_SSR <ssr_id> RSS <remote_spc> <remote_ssn> <flags>
-SCCP_SSR 5 RSS 2 0x08 0
-SCCP_SSR 6 RSS 2 0x06 0
 
 * Define Global Translations:
 * SCCP_GTT_PATTERN <pattern_id> <addr_indicator> <pc> <ssn> <global_title> [<gtai_pattern>]
 * SCCP_GTT_ADDRESS <address_id> <addr_indicator> <pc> <ssn> <global_title> [<gtai_replacement>]
 * SCCP_GTT <pattern_id> <mask> <primary_address_id> [<backup_address_id>]
 
-SCCP_GTT_PATTERN 1 0x10 0x00 0x00 0x001204 375290000002 * 1208001204732590000020 | 100012044732590000020
-SCCP_GTT_ADDRESS 1 0x43 0x01 0x08 0x00     -            * to tunnel
-SCCP_GTT         1                         R 1
+SCCP_GTT_PATTERN 1 0x10 0x00 0x00 0x001204 375290000026 * from MTU -a10001204732509000062
+SCCP_GTT_ADDRESS 1 0x43 0x02 0x06 0x00 -                * to MTR HLR
+SCCP_GTT 1 R 1
+
+SCCP_GTT_PATTERN 2 0x10 0x00 0x00 0x001204 375290000028 * from MTU -a10001204732509000082
+SCCP_GTT_ADDRESS 2 0x43 0x02 0x08 0x00 -                * to MTR MSC
+SCCP_GTT 2 R 2
+
+SCCP_GTT_PATTERN 3 0x10 0x00 0x00 0x001204 375290000018 * from MTU -a10001204732509000081
+SCCP_GTT_ADDRESS 3 0x43 0x01 0x08 0x00 -                * to MTU
+SCCP_GTT 3 R 3
+
+SCCP_GTT_PATTERN 4 0x10 0x00 0x00 0x001204 375290000002 * 1208001204732590000020 | 100012044732590000020
+SCCP_GTT_ADDRESS 4 0x43 0x01 0x08 0x00     -            * to tunnel
+SCCP_GTT 4 R 4
 
 *
 * Enable SCCP traces:

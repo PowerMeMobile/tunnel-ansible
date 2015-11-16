@@ -119,6 +119,7 @@ MTU Rx: I0000 M t87e3 i0000 f15 d2d s00 p0400
 
 Check out also:
 
+$ ./mtu -d5 -a43020006 -g43010008 -e375291112233 -c375290000002
 $ ./mtu -d5 -a10001204732509000062 -g10001204732509000081 -e375291112233 -c375290000002
 $ ./mtu -d0 -a43020008 -g43010008 -i987654321 -s"Hello"
 $ ./mtu -d0 -a10001204732509000082 -g10001204732509000081 -i987654321 -s"Hello"
@@ -176,6 +177,11 @@ Message text: Hello
 Destination ISDN number: 375296543210
 Origination ISDN number: 375296543211
 Press `Send SRIforSM'
+
+IMSI: 60802678000454
+VLR number: 375290000001
+Press `Send SRIForSM and MtForwardSM'
+Press `Send MtForwardSM'
 
 
 vagrant ssh client

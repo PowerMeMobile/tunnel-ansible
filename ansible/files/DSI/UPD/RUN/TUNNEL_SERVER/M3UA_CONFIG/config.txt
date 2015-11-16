@@ -28,12 +28,11 @@ SCCP_SSR 1 RSP 1 0 0x0000
 *
 * Define Local Sub-Systems:
 * SCCP_SSR <ssr_id> LSS <local_ssn> <module_id> <flags> <protocol>
-SCCP_SSR 2 LSS 0x08 0x2d 0 MAP
-SCCP_SSR 3 LSS 0x06 0x2d 0 MAP
+SCCP_SSR 2 LSS 0x06 0x2d 0 MAP  * MTR HLR
+SCCP_SSR 3 LSS 0x08 0x2d 0 MAP  * MTR MSC
 
 * Define Remote Sub-Systems:
 * SCCP_SSR <ssr_id> RSS <remote_spc> <remote_ssn> <flags>
-SCCP_SSR 4 RSS 1 0x08 0
 
 * Define Global Translations:
 * SCCP_GTT_PATTERN <pattern_id> <addr_indicator> <pc> <ssn> <global_title> [<gtai_pattern>]

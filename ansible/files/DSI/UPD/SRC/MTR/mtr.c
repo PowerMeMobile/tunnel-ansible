@@ -1100,7 +1100,7 @@ static int MTR_SendRtgInfoSmsResponse(instance, dlg_id, invoke_id)
     pptr[3] = invoke_id;
     pptr[4] = MAPPN_imsi;
     pptr[5] = 7;
-    pptr[6] = 0x06;
+    pptr[6] = 0x06; // 60802678000454
     pptr[7] = 0x08;
     pptr[8] = 0x62;
     pptr[9] = 0x87;
@@ -1110,12 +1110,12 @@ static int MTR_SendRtgInfoSmsResponse(instance, dlg_id, invoke_id)
     pptr[13] = MAPPN_msc_num;
     pptr[14] = 7;
     pptr[15] = 0x91; // ton/npi = 1/1
-    pptr[16] = 0x73;
+    pptr[16] = 0x73; // 375290000002
     pptr[17] = 0x25;
     pptr[18] = 0x09;
     pptr[19] = 0x00;
     pptr[20] = 0x00;
-    pptr[21] = 0x10;
+    pptr[21] = 0x20;
     pptr[22] = 0x00;
 
     /*
@@ -2024,6 +2024,3 @@ static int init_resources()
   }
   return (0);
 }
-
-
-

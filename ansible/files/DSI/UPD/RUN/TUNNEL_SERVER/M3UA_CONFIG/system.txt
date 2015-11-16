@@ -50,5 +50,4 @@ FORK_PROCESS  ../../../../HSTBIN/m3ua -t
 FORK_PROCESS  ../../../../HSTBIN/sccp -t
 FORK_PROCESS  ../../../../HSTBIN/tcap -t
 FORK_PROCESS  ../../../../HSTBIN/map -t
-FORK_PROCESS  ../../../../UPD/BIN/mtr -t * customized MTR
-*FORK_PROCESS  ../../../../mtr -t
+FORK_PROCESS  ../../../../UPD/BIN/mtr * customized MTR; add -t flag to disable tracing

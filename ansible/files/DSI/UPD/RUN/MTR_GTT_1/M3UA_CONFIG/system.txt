@@ -15,7 +15,7 @@ LOCAL           0xd1            * SCTP or SCTPn module
 *
 * Include LOCAL definition for non-native SCTP use or REDIRECT for native SCTP
 *
-***LOCAL           0xd0            * SCTPD module for non-native SCTP (Win,Linux,Sol8/9)
+**LOCAL           0xd0            * SCTPD module for non-native SCTP (Win,Linux,Sol8/9)
 REDIRECT        0xd0    0xd1    * SCTPn redirect for native SCTP (Solaris 10)
 *
 LOCAL           0xd2            * M3UA module
@@ -40,8 +40,8 @@ FORK_PROCESS  ../../../../s7_mgt -d
 FORK_PROCESS  ../../../../s7_log -fss7.log -tt
 *
 * SCTP and SCTPD for non-native SCTP
-***FORK_PROCESS  ../../../../sctp
-***FORK_PROCESS  ../../../../sctpd
+**FORK_PROCESS  ../../../../sctp
+**FORK_PROCESS  ../../../../sctpd
 *
 * SCTPn for native SCTP
 FORK_PROCESS  ../../../../sctpn
@@ -50,4 +50,4 @@ FORK_PROCESS  ../../../../HSTBIN/m3ua -t
 FORK_PROCESS  ../../../../HSTBIN/sccp -t
 FORK_PROCESS  ../../../../HSTBIN/tcap -t
 FORK_PROCESS  ../../../../HSTBIN/map -t
-FORK_PROCESS  ../../../../mtr * -t to disable tracing
+FORK_PROCESS  ../../../../UPD/BIN/mtr * customized MTR; add -t flag to disable tracing

@@ -24,8 +24,9 @@ REDIRECT        0xc2    0xd2    * MBM to M3UA
 LOCAL           0x33            * SCCP module
 LOCAL           0x14            * TCAP module
 LOCAL           0x15            * MAP module
-LOCAL           0x2d            * Tunnel app
-LOCAL           0x5d            * s7_play Utility
+LOCAL           0x2d            * tunnel app
+LOCAL           0x4d            * mtu util
+LOCAL           0x5d            * s7_play util
 
 NUM_MSGS 5000                   * Number of standard size messages
 VERIFY
@@ -36,7 +37,7 @@ VERIFY
 FORK_PROCESS  ../../../../tim
 FORK_PROCESS  ../../../../tick
 FORK_PROCESS  ../../../../s7_mgt -d
-FORK_PROCESS  ../../../../s7_log -fss7.log -td -o0xffff
+FORK_PROCESS  ../../../../s7_log -fss7.log -tt
 *
 * SCTP and SCTPD for non-native SCTP
 ** disabled after installing libsctp1
