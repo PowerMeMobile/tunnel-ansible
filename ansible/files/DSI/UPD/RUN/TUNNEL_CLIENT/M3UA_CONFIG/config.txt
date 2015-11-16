@@ -1,0 +1,69 @@
+********************************************************************************
+* Example config.txt.
+* Edit this file to reflect your configuration.
+********************************************************************************
+
+* Local IP Address Configuration
+CNSYS:IPADDR=192.168.200.102;
+
+* SCTP Association configuration to Remote IPSP
+SNSLI:SNLINK=1,IPADDR=192.168.200.101,SNTYPE=M3UA,SNEND=C,NA=102;
+
+* Remote Application Server Configuration
+SNRAI:RAS=1,DPC=2,RC=101;
+
+* Add Remote AS to Association
+SNALI:SNAL=1,RAS=1,SNLINK=1;
+
+*****************************************************************
+*
+*
+* SCCP Parameters:
+* SCCP_CONFIG <local_spc> <ssf> <options> <send_uis>
+SCCP_CONFIG 1 0x8 0x0102 0x01
+*
+* Define Remote Signaling Points:
+* SCCP_SSR <ssr_id> RSP <remote_spc> <flags> <pc_mask>
+SCCP_SSR 1 RSP 2 0 0x0000
+*
+* Define Local Sub-Systems:
+* SCCP_SSR <ssr_id> LSS <local_ssn> <module_id> <flags> <protocol>
+SCCP_SSR 2 LSS 0x08 0x2d 0 MAP
+*
+* Define Remote Sub-Systems:
+* SCCP_SSR <ssr_id> RSS <remote_spc> <remote_ssn> <flags>
+SCCP_SSR 5 RSS 2 0x08 0
+SCCP_SSR 6 RSS 2 0x06 0
+
+* Define Global Translations:
+* SCCP_GTT_PATTERN <pattern_id> <addr_indicator> <pc> <ssn> <global_title> [<gtai_pattern>]
+* SCCP_GTT_ADDRESS <address_id> <addr_indicator> <pc> <ssn> <global_title> [<gtai_replacement>]
+* SCCP_GTT <pattern_id> <mask> <primary_address_id> [<backup_address_id>]
+
+SCCP_GTT_PATTERN 1 0x10 0x00 0x00 0x001204 375290000002 * 1208001204732590000020 | 100012044732590000020
+SCCP_GTT_ADDRESS 1 0x43 0x01 0x08 0x00     -            * to tunnel
+SCCP_GTT         1                         R 1
+
+*
+* Enable SCCP traces:
+* SCCP_TRACE <op_evt_mask> <ip_evt_mask> <non_prim_mask>
+*SCCP_TRACE 0x3 0x7 0x3
+*
+*
+* TCAP Parameters:
+* TCAP_CONFIG <base_ogdlg_id> <nog_dialogues> <base_icdlg_id> <nic_dialogues> <options> <dlg_hunt> [<addr_format>]
+TCAP_CONFIG 0 32767 0x8000 32767 0x0000 0 0
+*
+* Enable TCAP traces:
+* TCAP_TRACE <op_evt_mask> <ip_evt_mask> <non_prim_mask>
+* TCAP_TRACE 0x7 0xf 0x0
+*
+*
+* MAP Parameters:
+MAP_CONFIG 0
+*
+* Enable MAP traces:
+* MAP_TRACE <op_evt_mask> <ip_evt_mask> <non_prim_mask>
+*MAP_TRACE 0xf 0xf 0x15
+*
+* End of file

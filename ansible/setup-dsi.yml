@@ -99,3 +99,13 @@
     copy: src=files/DSI/UPD/RUN/MTU_GTT_1
           dest=/opt/DSI/UPD/RUN/
     when: ansible_hostname == 'client'
+
+  - name: Copy Tunnel server config
+    copy: src=files/DSI/UPD/RUN/TUNNEL_SERVER
+          dest=/opt/DSI/UPD/RUN/
+    when: ansible_hostname == 'server'
+
+  - name: Copy Tunnel client config
+    copy: src=files/DSI/UPD/RUN/TUNNEL_CLIENT
+          dest=/opt/DSI/UPD/RUN/
+    when: ansible_hostname == 'client'

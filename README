@@ -1,3 +1,6 @@
+Server is a machine on operator side.
+Client is a machine on our side.
+
 Create server and client machines
 =================================
 $ vagrant up
@@ -168,3 +171,28 @@ Press `Run tests'
 Press `Start'
 
 We have connection established!
+
+Message text: Hello
+Destination ISDN number: 375296543210
+Origination ISDN number: 375296543211
+Press `Send SRIforSM'
+
+
+vagrant ssh client
+
+Generate ssh key and add it to your github profile
+
+cd ~/
+mkdir -p tunnel tunnel_smpp
+
+cd tunnel
+git clone git@github.com:PowerMeMobile/tunnel.git
+cd tunnel
+make
+
+cd ../../
+
+cd tunnel_smpp
+git clone git@github.com:PowerMeMobile/tunnel_smpp.git
+cd tunnel_smpp
+make
