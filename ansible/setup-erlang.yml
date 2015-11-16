@@ -1,0 +1,28 @@
+---
+- name: Setup Erlang
+  hosts: all
+  sudo: true
+  vars:
+  - erlang_version: R16B03-6
+  tasks:
+  - name: Import Erlang Solutions GPG key
+    rpm_key: key=http://packages.erlang-solutions.com/rpm/erlang_solutions.asc
+             state=present
+
+  - name: Install Erlang Solution repo
+    copy: src=files/erlang_solutions.repo
+          dest=/etc/yum.repos.d/
+          owner=root
+          group=root
+          mode=644
+
+  - name: Install Erlang
+    yum: name=esl-erlang-{{erlang_version}}
+         state=present
+
+  - name: Install build deps
+    yum: name={{item}}
+         state=present
+    with_items:
+    - ncurses-devel
+    - libuuid-devel
