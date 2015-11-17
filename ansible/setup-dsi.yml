@@ -90,16 +90,6 @@
     command: sysctl -w kernel.msgmnb=65536
     when: msgmnb.changed
 
-  - name: Copy MTR GTT example config
-    copy: src=files/DSI/UPD/RUN/MTR_GTT_1
-          dest=/opt/DSI/UPD/RUN/
-    when: ansible_hostname == 'server'
-
-  - name: Copy MTU GTT example config
-    copy: src=files/DSI/UPD/RUN/MTU_GTT_1
-          dest=/opt/DSI/UPD/RUN/
-    when: ansible_hostname == 'client'
-
   - name: Copy Tunnel server config
     copy: src=files/DSI/UPD/RUN/TUNNEL_SERVER
           dest=/opt/DSI/UPD/RUN/

@@ -1,5 +1,5 @@
 Server is a machine on operator side.
-Client is a machine on our side.
+Client is a machine on our side. Tunnel is the client.
 
 Create server and client machines
 =================================
@@ -55,7 +55,7 @@ Tab 1
 -----
 $ vagrant ssh server
 [INSIDE]
-$ cd /opt/DSI/UPD/RUN/MTR_GTT_1/M3UA_CONFIG/
+$ cd /opt/DSI/UPD/RUN/TUNNEL_SERVER/M3UA_CONFIG/
 $ sudo ../../../../gctload -d
 Reading from system configuration file: 'system.txt'
 ...
@@ -68,7 +68,7 @@ Tab 2
 -----
 $ vagrant ssh client
 $ [INSIDE]
-$ cd /opt/DSI/UPD/RUN/MTU_GTT_1/M3UA_CONFIG
+$ cd /opt/DSI/UPD/RUN/TUNNEL_CLIENT/M3UA_CONFIG
 $ sudo ../../../../gctload -d
 Reading from system configuration file: 'system.txt'
 ...
@@ -124,8 +124,8 @@ $ ./mtu -d5 -a10001204732509000062 -g10001204732509000081 -e375291112233 -c37529
 $ ./mtu -d0 -a43020008 -g43010008 -i987654321 -s"Hello"
 $ ./mtu -d0 -a10001204732509000082 -g10001204732509000081 -i987654321 -s"Hello"
 
-Test the jSS7 simulator
-========================
+Test the jSS7 stack and the jSS7 simulator
+==========================================
 Chapter 12. SS7 Simulator
 ss7/docs/en-US/pdf/Mobicents_SS7Stack_User_Guide.pdf
 ansible/files/mobicents-ss7-2.0.0.FINAL.zip
@@ -183,22 +183,79 @@ VLR number: 375290000001
 Press `Send SRIForSM and MtForwardSM'
 Press `Send MtForwardSM'
 
+Setup Erlang and build Tunnel
+=============================
+$ ansible-playbook setup-erlang.yml -i hosts --limit client
 
-vagrant ssh client
+[INSIDE]
+$ vagrant ssh client
 
-Generate ssh key and add it to your github profile
+Generate ssh key and add it to your github account
+---------------------------------------------------
+https://help.github.com/articles/generating-ssh-keys/
 
-cd ~/
-mkdir -p tunnel tunnel_smpp
+$ ssh-keygen -t rsa
+$ cat ~/.ssh/id_rsa.pub
 
-cd tunnel
-git clone git@github.com:PowerMeMobile/tunnel.git
-cd tunnel
-make
+Close and build Tunnel
+----------------------
+$ cd ~/
+$ git clone git@github.com:PowerMeMobile/tunnel_smpp.git
+$ cd tunnel_smpp
+$ make
 
-cd ../../
+Test Tunnel with the DSI stack (server is MTR utility)
+======================================================
 
-cd tunnel_smpp
-git clone git@github.com:PowerMeMobile/tunnel_smpp.git
-cd tunnel_smpp
-make
+Tab 1 & 2
+---------
+See `Start MTU & MTR example' Tab 1 & 2
+
+Tab 3
+-----
+$ vagrant ssh client
+[INSIDE]
+$ cd ~/tunnel_smpp
+$ make console
+
+[OUTSIDE]
+$ smppload -H192.168.200.102 -s375296543210 -d375296543211 -bhello
+INFO:  Connected to 192.168.200.102:2775 (tcp)
+INFO:  Bound to Tunnel
+INFO:  Stats:
+INFO:     Send success:     1
+INFO:     Send fail:        0
+INFO:     Delivery success: 0
+INFO:     Delivery fail:    0
+INFO:     Incomings:        0
+INFO:     Errors:           0
+INFO:     Avg Rps:          1 mps
+INFO:  Unbound
+
+Test Tunnel with the jSS7 stack (server is jSS7 simulator)
+==========================================================
+
+Tab 1 & 2
+---------
+See `Test the jSS7 stack and the jSS7 simulator' Tab 1 & 2
+
+Tab 3
+-----
+$ vagrant ssh client
+[INSIDE]
+$ cd ~/tunnel_smpp
+$ make console
+
+[OUTSIDE]
+$ smppload -H192.168.200.102 -s375296543210 -d375296543211 -bhello
+INFO:  Connected to 192.168.200.102:2775 (tcp)
+INFO:  Bound to Tunnel
+INFO:  Stats:
+INFO:     Send success:     1
+INFO:     Send fail:        0
+INFO:     Delivery success: 0
+INFO:     Delivery fail:    0
+INFO:     Incomings:        0
+INFO:     Errors:           0
+INFO:     Avg Rps:          1 mps
+INFO:  Unbound
