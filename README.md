@@ -5,7 +5,10 @@ Create server and client machines
 =================================
 $ vagrant up
 
+Setup everything
+================
 $ cd ansible
+
 $ ansible all -i hosts -m ping
 server | success >> {
     "changed": false,
@@ -17,23 +20,15 @@ client | success >> {
     "ping": "pong"
 }
 
-Setup everything
-================
 $ ansible-playbook setup-all.yml -i hosts
-
 OR ONE BY ONE
-
-Setup the common environment
-============================
 $ ansible-playbook setup-common.yml -i hosts
-
-Setup the DSI stack
-===================
 $ ansible-playbook setup-dsi.yml -i hosts
-
-Setup the jSS7 simulator
-========================
 $ ansible-playbook setup-jss7.yml -i hosts
+
+$ ansible-playbook setup-erlang.yml -i hosts --limit client
+
+$ cd ..
 
 Test the DSI stack
 ==================
@@ -124,8 +119,10 @@ $ ./mtu -d5 -a10001204732509000062 -g10001204732509000081 -e375291112233 -c37529
 $ ./mtu -d0 -a43020008 -g43010008 -i987654321 -s"Hello"
 $ ./mtu -d0 -a10001204732509000082 -g10001204732509000081 -i987654321 -s"Hello"
 
-Test the jSS7 stack and the jSS7 simulator
-==========================================
+Stop everything and exit.
+
+Test the jSS7 simulator
+=======================
 Chapter 12. SS7 Simulator
 ss7/docs/en-US/pdf/Mobicents_SS7Stack_User_Guide.pdf
 ansible/files/mobicents-ss7-2.0.0.FINAL.zip
@@ -148,7 +145,8 @@ Control via RMI
 ---------------
 Select `Connect to the existing testerHost...'
 service:jmx:rmi:///jndi/rmi://server:9999/server
-Press `Run tests'
+Press `Start'
+Press `Run test'
 Press `Start'
 
 OR
@@ -168,7 +166,8 @@ $ sudo bin/run.sh gui --name=client
 Control via RMI
 ---------------
 Select `Create a local testerHost'
-Press `Run tests'
+Press `Start'
+Press `Run test'
 Press `Start'
 
 We have connection established!
@@ -183,13 +182,13 @@ VLR number: 375290000001
 Press `Send SRIForSM and MtForwardSM'
 Press `Send MtForwardSM'
 
-Setup Erlang and build Tunnel
-=============================
-$ ansible-playbook setup-erlang.yml -i hosts --limit client
+Stop everything and exit.
 
-[INSIDE]
+Build Tunnel
+============
 $ vagrant ssh client
 
+[INSIDE]
 Generate ssh key and add it to your github account
 ---------------------------------------------------
 https://help.github.com/articles/generating-ssh-keys/
@@ -203,9 +202,10 @@ $ cd ~/
 $ git clone git@github.com:PowerMeMobile/tunnel_smpp.git
 $ cd tunnel_smpp
 $ make
+$ exit
 
-Test Tunnel with the DSI stack (server is MTR utility)
-======================================================
+Test Tunnel with the DSI stack (server is the MTR utility)
+==========================================================
 
 Tab 1 & 2
 ---------
@@ -232,14 +232,20 @@ INFO:     Errors:           0
 INFO:     Avg Rps:          1 mps
 INFO:  Unbound
 
+Stop everything and exit.
+
 Test Tunnel with the jSS7 stack (server is jSS7 simulator)
 ==========================================================
 
 Tab 1 & 2
 ---------
-See `Test the jSS7 stack and the jSS7 simulator' Tab 1 & 2
+See `Test the jSS7 simulator' Tab 1 & 2
 
 Tab 3
+-----
+See `Start MTU & MTR example' Tab 2
+
+Tab 4
 -----
 $ vagrant ssh client
 [INSIDE]
@@ -259,3 +265,5 @@ INFO:     Incomings:        0
 INFO:     Errors:           0
 INFO:     Avg Rps:          1 mps
 INFO:  Unbound
+
+Stop everything and exit.

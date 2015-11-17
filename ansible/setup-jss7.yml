@@ -1,5 +1,5 @@
 ---
-- name: Provision jSS7 simulator
+- name: Setup the jSS7 simulator
   hosts: all
   sudo: true
   tasks:

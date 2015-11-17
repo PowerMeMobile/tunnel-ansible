@@ -1,5 +1,5 @@
 ---
-- name: Provision DSI stack
+- name: Setup the DSI stack
   hosts: all
   sudo: true
   vars:

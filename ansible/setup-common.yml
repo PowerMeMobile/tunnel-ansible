@@ -1,5 +1,5 @@
 ---
-- name: Provision common env
+- name: Setup common env
   hosts: all
   sudo: true
   tasks:
