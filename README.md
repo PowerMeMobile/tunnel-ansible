@@ -11,7 +11,8 @@ Setup everything
 ================
 <pre>
 $ cd ansible
-
+</pre>
+<pre>
 $ ansible all -i hosts -m ping
 server | success >> {
     "changed": false,
@@ -22,7 +23,8 @@ client | success >> {
     "changed": false,
     "ping": "pong"
 }
-
+</pre>
+<pre>
 $ ansible-playbook setup-all.yml -i hosts
 </pre>
 OR ONE BY ONE
