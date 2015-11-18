@@ -1,9 +1,13 @@
-Server is a machine on operator side.
-Client is a machine on our side. Tunnel is the client.
+Vocabulary
+==========
+ - Server is a machine on operator side.
+ - Client is a machine on our side. Tunnel is the client.
 
 Create server and client machines
 =================================
 <pre>
+$ git clone https://github.com/PowerMeMobile/tunnel-env
+$ cd tunnel-env
 $ vagrant up
 </pre>
 
