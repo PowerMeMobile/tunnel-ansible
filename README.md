@@ -13,6 +13,9 @@ $ vagrant up
 
 Setup everything
 ================
+
+Check all hosts available:
+
 <pre>
 $ cd ansible
 </pre>
@@ -28,6 +31,34 @@ client | success >> {
     "ping": "pong"
 }
 </pre>
+
+Provision blank hosts within alley-ansible scripts:
+
+1. comment invalid task in alley-ansible repository
+- name: Install PMM-Base task in
+alley-ansible/roles/common/tasks/alley-ansible/roles/common/tasks/alley-ansible/roles/common/tasks/main.yml
+
+2. Create local vault file
+
+```bash
+$ echo 6LwrdfnwyWL70cBMWBst7pGM_E7Xnyo1grBfqvJgoad5LciWfmVP0L3a2U2UfwA_ > ~/.alley-ansible.strong-password.txt
+```
+
+3. Provision
+
+``` bash
+$ ansible-playbook ../../alley-ansible/provision-env.yml -i hosts --tags common --vault-password-file=~/.alley-ansible.strong-password.txt
+
+$ ansible-playbook ../../alley-ansible/provision-env.yml -i hosts --tags erlang --vault-password-file=~/.alley-ansible.strong-password.txt --extra-vars erlang_version=R16B03-6
+```
+
+4. Install ncurses-devel on client
+
+```bash
+$ vagrant ssh client
+$ sudo yum install -y ncurses-devel
+```
+
 <pre>
 $ ansible-playbook setup-all.yml -i hosts
 </pre>
