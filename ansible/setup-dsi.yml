@@ -95,7 +95,19 @@
           dest=/opt/DSI/UPD/RUN/
     when: ansible_hostname == 'server'
 
+  - name: Provision Tunnel server config
+    template:
+      src=files/DSI/UPD/RUN/TUNNEL_SERVER/M3UA_CONFIG/config.txt.j2
+      dest=/opt/DSI/UPD/RUN/TUNNEL_SERVER/M3UA_CONFIG/config.txt
+    when: ansible_hostname == 'server'
+
   - name: Copy Tunnel client config
     copy: src=files/DSI/UPD/RUN/TUNNEL_CLIENT
           dest=/opt/DSI/UPD/RUN/
+    when: ansible_hostname == 'client'
+
+  - name: Provision Tunnel client config
+    template:
+      src=files/DSI/UPD/RUN/TUNNEL_CLIENT/M3UA_CONFIG/config.txt.j2
+      dest=/opt/DSI/UPD/RUN/TUNNEL_CLIENT/M3UA_CONFIG/config.txt
     when: ansible_hostname == 'client'

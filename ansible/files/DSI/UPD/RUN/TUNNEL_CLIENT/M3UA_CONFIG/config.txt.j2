@@ -4,13 +4,13 @@
 ********************************************************************************
 
 * Local IP Address Configuration
-CNSYS:IPADDR=192.168.200.101;
+CNSYS:IPADDR={{ hostvars['client']['ansible_ssh_host'] }};
 
 * SCTP Association configuration to Remote IPSP
-SNSLI:SNLINK=1,IPADDR=192.168.200.102,SNTYPE=M3UA,SNEND=S,NA=102;
+SNSLI:SNLINK=1,IPADDR={{ hostvars['server']['ansible_ssh_host'] }},SNTYPE=M3UA,SNEND=C,NA=102;
 
 * Remote Application Server Configuration
-SNRAI:RAS=1,DPC=1,RC=101;
+SNRAI:RAS=1,DPC=2,RC=101;
 
 * Add Remote AS to Association
 SNALI:SNAL=1,RAS=1,SNLINK=1;
@@ -20,17 +20,16 @@ SNALI:SNAL=1,RAS=1,SNLINK=1;
 *
 * SCCP Parameters:
 * SCCP_CONFIG <local_spc> <ssf> <options> <send_uis>
-SCCP_CONFIG 2 0x8 0x0102 0x01
+SCCP_CONFIG 1 0x8 0x0102 0x01
 *
 * Define Remote Signaling Points:
 * SCCP_SSR <ssr_id> RSP <remote_spc> <flags> <pc_mask>
-SCCP_SSR 1 RSP 1 0 0x0000
+SCCP_SSR 1 RSP 2 0 0x0000
 *
 * Define Local Sub-Systems:
 * SCCP_SSR <ssr_id> LSS <local_ssn> <module_id> <flags> <protocol>
-SCCP_SSR 2 LSS 0x06 0x2d 0 MAP  * MTR HLR
-SCCP_SSR 3 LSS 0x08 0x2d 0 MAP  * MTR MSC
-
+SCCP_SSR 2 LSS 0x08 0x2d 0 MAP
+*
 * Define Remote Sub-Systems:
 * SCCP_SSR <ssr_id> RSS <remote_spc> <remote_ssn> <flags>
 
@@ -39,9 +38,21 @@ SCCP_SSR 3 LSS 0x08 0x2d 0 MAP  * MTR MSC
 * SCCP_GTT_ADDRESS <address_id> <addr_indicator> <pc> <ssn> <global_title> [<gtai_replacement>]
 * SCCP_GTT <pattern_id> <mask> <primary_address_id> [<backup_address_id>]
 
-SCCP_GTT_PATTERN 1 0x10 0x00 0x00 0x001204 37529/+
-SCCP_GTT_ADDRESS 1 0x43 0x02 0x08 0x00         -/-
-SCCP_GTT         1                             R/R 1
+SCCP_GTT_PATTERN 1 0x10 0x00 0x00 0x001204 375290000026 * from MTU -a10001204732509000062
+SCCP_GTT_ADDRESS 1 0x43 0x02 0x06 0x00 -                * to MTR HLR
+SCCP_GTT 1 R 1
+
+SCCP_GTT_PATTERN 2 0x10 0x00 0x00 0x001204 375290000028 * from MTU -a10001204732509000082
+SCCP_GTT_ADDRESS 2 0x43 0x02 0x08 0x00 -                * to MTR MSC
+SCCP_GTT 2 R 2
+
+SCCP_GTT_PATTERN 3 0x10 0x00 0x00 0x001204 375290000018 * from MTU -a10001204732509000081
+SCCP_GTT_ADDRESS 3 0x43 0x01 0x08 0x00 -                * to MTU
+SCCP_GTT 3 R 3
+
+SCCP_GTT_PATTERN 4 0x10 0x00 0x00 0x001204 375290000002 * 1208001204732590000020 | 100012044732590000020
+SCCP_GTT_ADDRESS 4 0x43 0x01 0x08 0x00     -            * to tunnel
+SCCP_GTT 4 R 4
 
 *
 * Enable SCCP traces:
@@ -51,7 +62,7 @@ SCCP_GTT         1                             R/R 1
 *
 * TCAP Parameters:
 * TCAP_CONFIG <base_ogdlg_id> <nog_dialogues> <base_icdlg_id> <nic_dialogues> <options> <dlg_hunt> [<addr_format>]
-TCAP_CONFIG 0x0 32767 0x8000 32767 0x0000 0 0
+TCAP_CONFIG 0 32767 0x8000 32767 0x0000 0 0
 *
 * Enable TCAP traces:
 * TCAP_TRACE <op_evt_mask> <ip_evt_mask> <non_prim_mask>

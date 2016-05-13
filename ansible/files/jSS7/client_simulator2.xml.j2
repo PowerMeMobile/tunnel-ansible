@@ -5,8 +5,8 @@
 	<instance_L3 value="TCAP+MAP"/>
 	<instance_TestTask value="SMS_TEST_SERVER"/>
 	<m3ua storePcapTrace="false" isSctpServer="false" localPort="2905" remotePort="2905" ipChannelType="SCTP" dpc="2" opc="1" si="3" routingConext="101" networkAppearance="102" m3uaFunctionality="IPSP" m3uaExchangeType="SE" m3uaIPSPType="CLIENT">
-		<localHost value="192.168.200.102"/>
-		<remoteHost value="192.168.200.101"/>
+		<localHost value="{{ hostvars['client']['ansible_ssh_host'] }}"/>
+		<remoteHost value="{{ hostvars['server']['ansible_ssh_host'] }}"/>
 	</m3ua>
 	<dialogic SourceModuleId="0" DestinationModuleId="0"/>
 	<sccp routeOnGtMode="true" remoteSpc="2" localSpc="1" ni="2" remoteSsn="8" localSsn="8" translationType="0">

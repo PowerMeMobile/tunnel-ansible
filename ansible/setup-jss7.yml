@@ -26,11 +26,11 @@
   # http://www.linuxquestions.org/questions/linux-software-2/cannot-open-display-as-root-352200/
   - name: Set server to /etc/hosts
     lineinfile: dest=/etc/hosts
-                line='192.168.200.101 server'
+                line="{{ hostvars['server']['ansible_ssh_host'] }} server"
 
   - name: Export XAUTHORITY
-    lineinfile: dest=/home/vagrant/.bashrc
-                line='export XAUTHORITY=/home/vagrant/.Xauthority'
+    lineinfile: dest={{ ansible_env.HOME }}/.bashrc
+                line="export XAUTHORITY={{ ansible_env.HOME }}/.Xauthority"
 
   - name: Create jSS7 folder
     file: path=/opt/jSS7
@@ -45,12 +45,14 @@
     file: path=/opt/jSS7/ss7/mobicents-ss7-simulator/bin/run.sh
           mode=0755
 
-  - name: Copy simulator server config
-    copy: src=files/jSS7/server_simulator2.xml
-          dest=/opt/jSS7/ss7/mobicents-ss7-simulator/
+  - name: Provision simulator server config
+    template:
+      src=files/jSS7/server_simulator2.xml.j2
+      dest=/opt/jSS7/ss7/mobicents-ss7-simulator/server_simulator2.xml
     when: ansible_hostname == 'server'
 
-  - name: Copy simulator client config
-    copy: src=files/jSS7/client_simulator2.xml
-          dest=/opt/jSS7/ss7/mobicents-ss7-simulator/
+  - name: Provision simulator client config
+    template:
+      src=files/jSS7/client_simulator2.xml.j2
+      dest=/opt/jSS7/ss7/mobicents-ss7-simulator/client_simulator2.xml
     when: ansible_hostname == 'client'

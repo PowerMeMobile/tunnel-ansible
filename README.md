@@ -1,7 +1,7 @@
 Vocabulary
 ==========
- - Server is a machine on operator side.
- - Client is a machine on our side. Tunnel is the client.
+ - Server is a machine on operator side (192.168.200.101)
+ - Client is a machine on our side. Tunnel is the client (192.168.200.102)
 
 Create server and client machines
 =================================
